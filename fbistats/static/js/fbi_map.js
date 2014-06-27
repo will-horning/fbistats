@@ -3,21 +3,17 @@ $(document).ready(function(){
             '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
             'Imagery © <a href="http://mapbox.com">Mapbox</a>';
     MB_URL = 'http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
-
-    function getColor(i){
-        if (i < 0.05){
-            scale = chroma.scale(['blue', 'green', 'yellow', 'orange', 'red']).domain([0.0,0.05]).out('hex');
-            return scale(i);
-        }
-        else{
-            return '#ff0000';
-        }
+    var vals = []
+    for(var i=0; i < counties_data['features'].length; i++){
+        feature = counties_data['features'][i];
+        vals.push(feature['properties']['Burglary']);
     }
+    var scale = chroma.scale(['blue','red']).domain(vals, 10, 'quantiles');
 
     function style(feature) {
         return {
             fillOpacity: 0.7,
-            fillColor: getColor(feature.properties['Forcible rape']),
+            fillColor: scale(feature.properties['Burglary']),
             weight: 1,
             opacity: 1,
             color: 'white',
